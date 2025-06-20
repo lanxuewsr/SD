@@ -1354,9 +1354,11 @@ set_file_open_limit() {
     if ! grep -q "$username.*nofile" /etc/security/limits.conf; then
         cat << EOF >> /etc/security/limits.conf
 ## Hard limit for max opened files
+root        hard nofile 1048576
 $username        hard nofile 1048576
 ## Soft limit for max opened files
 $username        soft nofile 1048576
+root        soft nofile 1048576
 EOF
     else
         info "文件打开限制已经存在，跳过"
