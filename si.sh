@@ -2025,6 +2025,236 @@ EOF
     return 0
 } 
 
+# 安装BBRa
+install_bbra() {
+    info "安装BBRa..."
+    
+    # 检测操作系统
+    detect_os
+    
+    # 安装内核
+    if [[ "$OS" =~ "Debian" ]]; then
+        if [ $(uname -m) == "x86_64" ]; then
+            info "安装amd64内核..."
+            apt-get -y install linux-image-amd64 linux-headers-amd64
+            if [ $? -ne 0 ]; then
+                fail "BBR内核安装失败"
+                return 1
+            fi
+        elif [ $(uname -m) == "aarch64" ]; then
+            info "安装arm64内核..."
+            apt-get -y install linux-image-arm64 linux-headers-arm64
+            if [ $? -ne 0 ]; then
+                fail "BBR内核安装失败"
+                return 1
+            fi
+        fi
+    elif [[ "$OS" =~ "Ubuntu" ]]; then
+        info "安装通用内核..."
+        apt-get -y install linux-image-generic linux-headers-generic
+        if [ $? -ne 0 ]; then
+            fail "BBR内核安装失败"
+            return 1
+        fi
+    else
+        fail "不支持的操作系统"
+        return 1
+    fi
+    
+    # 下载BBRa脚本
+    info "下载BBRa脚本..."
+    wget https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/BBR/BBRx/BBRa.sh -O /root/BBRa.sh
+    if [ ! -f /root/BBRa.sh ]; then
+        fail "BBRa下载失败"
+        return 1
+    fi
+    
+    chmod +x /root/BBRa.sh
+    
+    # 创建系统启动服务
+    info "创建BBR安装服务..."
+    cat > /etc/systemd/system/bbrinstall.service << EOF
+[Unit]
+Description=BBRinstall
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/root/BBRa.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    
+    systemctl enable bbrinstall.service
+    
+    info "BBRa安装完成，重启后生效"
+    need_input "是否现在重启服务器？(y/n)"
+    read reboot_now
+    if [[ "$reboot_now" == "y" || "$reboot_now" == "Y" ]]; then
+        info "正在重启服务器..."
+        reboot
+    else
+        info "请稍后手动重启服务器以应用BBRa"
+    fi
+    
+    return 0
+}
+
+# 安装BBRx2
+install_bbrx2() {
+    info "安装BBRx2..."
+    
+    # 检测操作系统
+    detect_os
+    
+    # 安装内核
+    if [[ "$OS" =~ "Debian" ]]; then
+        if [ $(uname -m) == "x86_64" ]; then
+            info "安装amd64内核..."
+            apt-get -y install linux-image-amd64 linux-headers-amd64
+            if [ $? -ne 0 ]; then
+                fail "BBR内核安装失败"
+                return 1
+            fi
+        elif [ $(uname -m) == "aarch64" ]; then
+            info "安装arm64内核..."
+            apt-get -y install linux-image-arm64 linux-headers-arm64
+            if [ $? -ne 0 ]; then
+                fail "BBR内核安装失败"
+                return 1
+            fi
+        fi
+    elif [[ "$OS" =~ "Ubuntu" ]]; then
+        info "安装通用内核..."
+        apt-get -y install linux-image-generic linux-headers-generic
+        if [ $? -ne 0 ]; then
+            fail "BBR内核安装失败"
+            return 1
+        fi
+    else
+        fail "不支持的操作系统"
+        return 1
+    fi
+    
+    # 下载BBRx2脚本
+    info "下载BBRx2脚本..."
+    wget https://github.com/lanxuewsr/Seedbox-Components/raw/refs/heads/main/BBR/BBRx/BBRx2.sh -O /root/BBRx2.sh
+    if [ ! -f /root/BBRx2.sh ]; then
+        fail "BBRx2下载失败"
+        return 1
+    fi
+    
+    chmod +x /root/BBRx2.sh
+    
+    # 创建系统启动服务
+    info "创建BBR安装服务..."
+    cat > /etc/systemd/system/bbrinstall.service << EOF
+[Unit]
+Description=BBRinstall
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/root/BBRx2.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    
+    systemctl enable bbrinstall.service
+    
+    info "BBRx2安装完成，重启后生效"
+    need_input "是否现在重启服务器？(y/n)"
+    read reboot_now
+    if [[ "$reboot_now" == "y" || "$reboot_now" == "Y" ]]; then
+        info "正在重启服务器..."
+        reboot
+    else
+        info "请稍后手动重启服务器以应用BBRx2"
+    fi
+    
+    return 0
+}
+
+# 安装BBRz_fnos
+install_bbrz_fnos() {
+    info "安装BBRz_fnos..."
+    
+    # 检测操作系统
+    detect_os
+    
+    # 安装内核
+    if [[ "$OS" =~ "Debian" ]]; then
+        if [ $(uname -m) == "x86_64" ]; then
+            info "安装amd64内核..."
+            apt-get -y install linux-image-amd64 linux-headers-amd64
+            if [ $? -ne 0 ]; then
+                fail "BBR内核安装失败"
+                return 1
+            fi
+        elif [ $(uname -m) == "aarch64" ]; then
+            info "安装arm64内核..."
+            apt-get -y install linux-image-arm64 linux-headers-arm64
+            if [ $? -ne 0 ]; then
+                fail "BBR内核安装失败"
+                return 1
+            fi
+        fi
+    elif [[ "$OS" =~ "Ubuntu" ]]; then
+        info "安装通用内核..."
+        apt-get -y install linux-image-generic linux-headers-generic
+        if [ $? -ne 0 ]; then
+            fail "BBR内核安装失败"
+            return 1
+        fi
+    else
+        fail "不支持的操作系统"
+        return 1
+    fi
+    
+    # 下载BBRz_fnos脚本
+    info "下载BBRz_fnos脚本..."
+    wget https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/BBR/BBRx/BBRz_fnos.sh -O /root/BBRz_fnos.sh
+    if [ ! -f /root/BBRz_fnos.sh ]; then
+        fail "BBRz_fnos下载失败"
+        return 1
+    fi
+    
+    chmod +x /root/BBRz_fnos.sh
+    
+    # 创建系统启动服务
+    info "创建BBR安装服务..."
+    cat > /etc/systemd/system/bbrinstall.service << EOF
+[Unit]
+Description=BBRinstall
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/root/BBRz_fnos.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    
+    systemctl enable bbrinstall.service
+    
+    info "BBRz_fnos安装完成，重启后生效"
+    need_input "是否现在重启服务器？(y/n)"
+    read reboot_now
+    if [[ "$reboot_now" == "y" || "$reboot_now" == "Y" ]]; then
+        info "正在重启服务器..."
+        reboot
+    else
+        info "请稍后手动重启服务器以应用BBRz_fnos"
+    fi
+    
+    return 0
+}
 
 # 主函数
 main() {
@@ -2071,11 +2301,14 @@ main() {
         echo "15) 安装BBRy"
         echo "16) 安装BBRz"
         echo "17) 安装BBRv3"
+        echo "18) 安装BBRa"
+        echo "19) 安装BBRx2"
+        echo "20) 安装BBRz_fnos"
         echo
-        echo "18) 一键优化(5-13)"
-        echo "19) 退出"
+        echo "21) 一键优化(5-13)"
+        echo "22) 退出"
         
-        need_input "请选择操作 [1-19]:"
+        need_input "请选择操作 [1-22]:"
         read choice
         
         case $choice in
@@ -2096,7 +2329,10 @@ main() {
             15) install_bbry ;;
             16) install_bbrz ;;
             17) install_bbrv3 ;;
-            18)
+            18) install_bbra ;;
+            19) install_bbrx2 ;;
+            20) install_bbrz_fnos ;;
+            21)
                 kernel_settings
                 set_file_open_limit
                 set_disk_scheduler
@@ -2107,7 +2343,7 @@ main() {
                 set_initial_congestion_window
                 disable_tso
                 ;;
-            19) 
+            22) 
                 info "谢谢使用！"
                 exit 0
                 ;;
